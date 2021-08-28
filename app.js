@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 export default class Sketch {
   constructor (options) {
@@ -7,16 +8,31 @@ export default class Sketch {
     this.width = this.container.offsetWidth
     this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.01, 10 )
     this.camera.position.z = 1
+    this.time = 0
 
     this.scene = new THREE.Scene()
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
+    this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.width, this.height)
-    console.log(this.renderer.domElement)
     this.container.append(this.renderer.domElement)
-    this.time = 0
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+
     this.addObjects()
     this.render()
+    this.setupResize()
+  }
+
+  resize () {
+    this.width = this.container.offsetWidth
+    this.height = this.container.offsetHeight
+    this.renderer.setSize(this.width, this.height)
+    this.camera.aspect = this.width / this.height
+    this.camera.updateProjectionMatrix()
+  }
+
+  setupResize () {
+    window.addEventListener('resize', this.resize.bind(this))
   }
 
   addObjects () {
