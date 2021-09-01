@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import fragment from './shaders/fragment.glsl'
-import vertex from './shaders/vertex.glsl'
-import testTexture from './texture.jpg'
+import fragment from '../shaders/fragment.glsl'
+import vertex from '../shaders/vertex.glsl'
+import testTexture from '../img/texture.jpg'
 import * as dat from 'dat.gui'
 import gsap from 'gsap'
+import ASScroll from '@ashthornton/asscroll'
 
 export default class Sketch {
   constructor (options) {
@@ -15,7 +16,11 @@ export default class Sketch {
     this.camera = new THREE.PerspectiveCamera(this.fov, this.width / this.height, 10, 1000)
     this.camera.position.z = 600
     this.time = 0
+    this.scroll = new ASScroll()
 
+    this.scroll.enable({
+      horizontalScroll: true
+    })
     this.scene = new THREE.Scene()
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
