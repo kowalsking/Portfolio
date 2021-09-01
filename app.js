@@ -12,7 +12,7 @@ export default class Sketch {
     this.height = this.container.offsetHeight
     this.width = this.container.offsetWidth
     this.fov = 2 * Math.atan((this.height / 2) / 600) * (180 / Math.PI)
-    this.camera = new THREE.PerspectiveCamera(this.fov, this.width / this.height, 10, 1000 )
+    this.camera = new THREE.PerspectiveCamera(this.fov, this.width / this.height, 10, 1000)
     this.camera.position.z = 600
     this.time = 0
 
@@ -85,20 +85,20 @@ export default class Sketch {
         w: 1,
         duration: 1
       }, 0.3)
-  
+
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.scene.add(this.mesh)
 
     this.mesh.position.x = 300
-    this.mesh.rotation.z = 0.5
+    // this.mesh.rotation.z = 0.5
     this.mesh.scale.set(2., 1, 1)
   }
 
   render () {
     this.time += 0.05
     this.material.uniforms.time.value = this.time
-    // this.material.uniforms.uProgress.value = this.settings.progress
-    this.tl.progress(this.settings.progress)
+    this.material.uniforms.uProgress.value = this.settings.progress
+    // this.tl.progress(this.settings.progress)
     this.mesh.rotation.x = this.time / 2000
     this.mesh.rotation.y = this.time / 1000
     this.renderer.render(this.scene, this.camera)
