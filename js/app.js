@@ -34,7 +34,7 @@ export default class Sketch {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
     this.addObjects()
-    this.setupSettings()
+    // this.setupSettings()
     this.resize()
     this.render()
     this.setupResize()
@@ -99,23 +99,6 @@ export default class Sketch {
       fragmentShader: fragment
     })
 
-    this.tl = gsap.timeline()
-      .to(this.material.uniforms.uCorners.value, {
-        x: 1,
-        duration: 1
-      })
-      .to(this.material.uniforms.uCorners.value, {
-        y: 1,
-        duration: 1
-      }, 0.1)
-      .to(this.material.uniforms.uCorners.value, {
-        z: 1,
-        duration: 1
-      }, 0.2)
-      .to(this.material.uniforms.uCorners.value, {
-        w: 1,
-        duration: 1
-      }, 0.3)
 
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.scale.set(300, 300, 1)
@@ -131,6 +114,46 @@ export default class Sketch {
       texture.needsUpdate = true
 
       m.uniforms.uTexture.value = texture
+
+      img.addEventListener('mouseover', () => {
+        this.tl = gsap.timeline()
+          .to(m.uniforms.uCorners.value, {
+            x: 1,
+            duration: 0.4
+          })
+          .to(m.uniforms.uCorners.value, {
+            y: 1,
+            duration: 0.4
+          }, 0.1)
+          .to(m.uniforms.uCorners.value, {
+            z: 1,
+            duration: 0.4
+          }, 0.2)
+          .to(m.uniforms.uCorners.value, {
+            w: 1,
+            duration: 0.4
+          }, 0.3)
+      })
+
+      img.addEventListener('mouseout', () => {
+        this.tl = gsap.timeline()
+          .to(m.uniforms.uCorners.value, {
+            x: 0,
+            duration: 0.4
+          })
+          .to(m.uniforms.uCorners.value, {
+            y: 0,
+            duration: 0.4
+          }, 0.1)
+          .to(m.uniforms.uCorners.value, {
+            z: 0,
+            duration: 0.4
+          }, 0.2)
+          .to(m.uniforms.uCorners.value, {
+            w: 0,
+            duration: 0.4
+          }, 0.3)
+      })
 
       let mesh = new THREE.Mesh(this.geometry, m)
       this.scene.add(mesh)
@@ -159,7 +182,7 @@ export default class Sketch {
     this.material.uniforms.time.value = this.time
     // this.material.uniforms.uProgress.value = this.settings.progress
     this.setPosition()
-    this.tl.progress(this.settings.progress)
+    // this.tl.progress(this.settings.progress)
     this.mesh.rotation.x = this.time / 2000
     this.mesh.rotation.y = this.time / 1000
     this.renderer.render(this.scene, this.camera)
