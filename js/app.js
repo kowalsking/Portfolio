@@ -16,7 +16,11 @@ export default class Sketch {
     this.camera = new THREE.PerspectiveCamera(this.fov, this.width / this.height, 10, 1000)
     this.camera.position.z = 600
     this.time = 0
-    this.scroll = new ASScroll()
+    this.materials = []
+
+    this.scroll = new ASScroll({
+      disableRaf: true
+    })
 
     this.scroll.enable({
       horizontalScroll: true
@@ -31,6 +35,7 @@ export default class Sketch {
 
     this.addObjects()
     this.setupSettings()
+    this.resize()
     this.render()
     this.setupResize()
   }
@@ -49,6 +54,27 @@ export default class Sketch {
     this.renderer.setSize(this.width, this.height)
     this.camera.aspect = this.width / this.height
     this.camera.updateProjectionMatrix()
+
+    this.fov = 2 * Math.atan((this.height / 2) / 600) * (180 / Math.PI)
+    this.materials.forEach(m => {
+      m.uniforms.uResolution.value.x = this.width
+      m.uniforms.uResolution.value.y = this.height
+    })
+
+    this.imageStore.forEach(i => {
+      let bounds = i.img.getBoundingClientRect()
+      i.mesh.scale.set(bounds.width, bounds.height, 1)
+      i.top = bounds.top
+      i.left = bounds.left + this.scroll.currentPos
+      i.width = bounds.width
+      i.height = bounds.height
+
+      i.mesh.material.uniforms.uQuadSize.value.x = bounds.width
+      i.mesh.material.uniforms.uQuadSize.value.y = bounds.height
+
+      i.mesh.material.uniforms.uTextureSize.value.x = bounds.width
+      i.mesh.material.uniforms.uTextureSize.value.y = bounds.height
+    })
   }
 
   setupResize () {
@@ -97,7 +123,6 @@ export default class Sketch {
     this.mesh.position.x = 300
 
     this.images = [...document.querySelectorAll('.js-image')]
-    this.materials = []
     this.imageStore = this.images.map(img => {
       let bounds = img.getBoundingClientRect()
       let m = this.material.clone()
@@ -130,6 +155,7 @@ export default class Sketch {
 
   render () {
     this.time += 0.05
+    this.scroll.update()
     this.material.uniforms.time.value = this.time
     // this.material.uniforms.uProgress.value = this.settings.progress
     this.setPosition()
