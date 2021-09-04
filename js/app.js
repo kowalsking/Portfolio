@@ -22,9 +22,8 @@ export default class Sketch {
     this.scroll = new ASScroll({
       disableRaf: true
     })
-
     this.scroll.enable({
-      horizontalScroll: true
+      horizontalScroll: !document.body.classList.contains('b-inside')
     })
     this.scene = new THREE.Scene()
 
@@ -43,8 +42,76 @@ export default class Sketch {
   }
 
   barba () {
+    const that = this
     barba.init({
+      transitions: [{
+        name: 'from-home-transition',
+        from: {
+          namespace: ['home']
+        },
+        leave (data) {
+          that.scroll.disable()
+          return gsap.timeline()
+            .to(data.current.container, {
+              opacity: 0
+            })
+        },
+        enter (data) {
+          that.scroll = new ASScroll({
+            disableRaf: true,
+            containerElement: data.next.container.querySelector('[asscroll-container]')
+          })
+          that.scroll.enable({
+            newScrollElements: data.next.container.querySelector('.scroll-wrap')
+          })
+          return gsap.timeline()
+            .from(data.next.container, {
+              opacity: 0,
+              inComplete: () => {
+                that.container.style.display = 'none'
+              }
+            })
+        }
+      },
+      {
+        name: 'from-inside-page-transition',
+        from: {
+          namespace: ['inside']
+        },
+        leave (data) {
+          that.scroll.disable()
+          return gsap.timeline()
+            .to('.curtain', {
+              duration: 0.3,
+              y: 0
+            })
+            .to(data.current.container, {
+              opacity: 0
+            })
+        },
+        enter (data) {
+          that.scroll = new ASScroll({
+            disableRaf: true,
+            containerElement: data.next.container.querySelector('[asscroll-container]')
+          })
+          that.scroll.enable({
+            horizontalScroll: true,
+            newScrollElements: data.next.container.querySelector('.scroll-wrap')
+          })
 
+          that.addObjects()
+          that.resize()
+
+          return gsap.timeline()
+            .to('.curtain', {
+              duration: 0.3,
+              y: '-100%'
+            })
+            .from(data.next.container, {
+              opacity: 0
+            })
+        }
+      }]
     })
   }
 
