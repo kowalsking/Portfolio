@@ -6,6 +6,7 @@ import testTexture from '../img/texture.jpg'
 import * as dat from 'dat.gui'
 import gsap from 'gsap'
 import ASScroll from '@ashthornton/asscroll'
+import barba from '@barba/core'
 
 export default class Sketch {
   constructor (options) {
@@ -37,7 +38,14 @@ export default class Sketch {
     // this.setupSettings()
     this.resize()
     this.render()
+    this.barba()
     this.setupResize()
+  }
+
+  barba () {
+    barba.init({
+
+    })
   }
 
   setupSettings () {

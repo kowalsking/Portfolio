@@ -18,6 +18,7 @@
   "homepage": "https://github.com/kowalsking/Portfolio#readme",
   "dependencies": {
     "@ashthornton/asscroll": "^2.0.2",
+    "@barba/core": "^2.9.7",
     "dat.gui": "^0.7.7",
     "gsap": "^3.7.1",
     "parcel": "^2.0.0-rc.0",
